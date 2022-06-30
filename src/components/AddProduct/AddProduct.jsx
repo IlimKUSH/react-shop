@@ -34,12 +34,14 @@ const AddProduct = () => {
       <Box display={"flex"} flexDirection={"column"} marginTop={"30px"}>
         <Typography variant="h5">Add product</Typography>
         <TextField
+          style={{ marginTop: "20px" }}
           label="Title"
           variant="outlined"
           value={title}
           onChange={e => setTitle(e.target.value)}
         />
         <TextField
+          style={{ marginTop: "20px" }}
           type={"number"}
           label="Price"
           variant="outlined"
@@ -47,12 +49,14 @@ const AddProduct = () => {
           onChange={e => setPrice(+e.target.value)}
         />
         <TextField
+          style={{ marginTop: "20px" }}
           label="Description"
           variant="outlined"
           value={description}
           onChange={e => setDescription(e.target.value)}
         />
         <TextField
+          style={{ marginTop: "20px" }}
           label="Image"
           variant="outlined"
           value={image}

@@ -14,12 +14,19 @@ import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { useLocation, useNavigate } from "react-router-dom";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import { Badge } from "@mui/material";
+import { cartContext } from "../../contexts/cartContext";
 
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
+  const { getCart, count } = React.useContext(cartContext);
+  React.useEffect(() => {
+    getCart();
+  }, []);
 
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -156,7 +163,12 @@ const Header = () => {
               onClick={() => navigate("/cart")}
               aria-label="add to shopping cart"
               style={{ color: "white" }}>
-              <AddShoppingCartIcon />
+              <Badge
+                badgeContent={count}
+                color="error"
+                style={{ marginRight: "15px" }}>
+                <AddShoppingCartIcon />
+              </Badge>
             </IconButton>
           </Box>
           <Box sx={{ flexGrow: 0 }}>

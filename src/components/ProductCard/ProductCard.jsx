@@ -12,8 +12,11 @@ import { IconButton } from "@mui/material";
 import { cartContext } from "../../contexts/cartContext";
 
 export default function ProductCard({ item }) {
-  const { addToCart } = React.useContext(cartContext);
+  const { addToCart, checkProductInCart } = React.useContext(cartContext);
   const navigate = useNavigate();
+  const [productState, setProductState] = React.useState(
+    checkProductInCart(item.id)
+  );
   const { deleteProduct } = React.useContext(productsContext);
   return (
     <Card sx={{ maxWidth: 345, margin: "10px" }}>
@@ -41,8 +44,12 @@ export default function ProductCard({ item }) {
         <Button onClick={() => navigate(`/details/${item.id}`)} size="small">
           Details
         </Button>
-        <IconButton onClick={() => addToCart(item)}>
-          <AddShoppingCartIcon color="primary" />
+        <IconButton
+          onClick={() => {
+            addToCart(item);
+            setProductState(checkProductInCart(item.id));
+          }}>
+          <AddShoppingCartIcon color={productState ? "secondary" : "primary"} />
         </IconButton>
       </CardActions>
     </Card>

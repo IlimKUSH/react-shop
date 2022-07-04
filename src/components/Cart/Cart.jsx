@@ -6,6 +6,14 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import { Box, Container, IconButton, Typography } from "@mui/material";
+import { cartContext } from "../../contexts/cartContext";
+import Loader from "../Loader/Loader";
+import InfoIcon from "@mui/icons-material/Info";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { useNavigate } from "react-router-dom";
+import RemoveIcon from "@mui/icons-material/Remove";
+import AddIcon from "@mui/icons-material/Add";
 
 function createData(name, calories, fat, carbs, protein) {
   return { name, calories, fat, carbs, protein };
@@ -20,34 +28,66 @@ const rows = [
 ];
 
 export default function Cart() {
-  return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Dessert (100g serving)</TableCell>
-            <TableCell align="right">Calories</TableCell>
-            <TableCell align="right">Fat&nbsp;(g)</TableCell>
-            <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-            <TableCell align="right">Protein&nbsp;(g)</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map(row => (
-            <TableRow
-              key={row.name}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-              <TableCell component="th" scope="row">
-                {row.name}
-              </TableCell>
-              <TableCell align="right">{row.calories}</TableCell>
-              <TableCell align="right">{row.fat}</TableCell>
-              <TableCell align="right">{row.carbs}</TableCell>
-              <TableCell align="right">{row.protein}</TableCell>
+  const { getCart, cart } = React.useContext(cartContext);
+  React.useEffect(() => {
+    getCart();
+  }, []);
+  console.log(cart);
+  const navigate = useNavigate();
+  const { deleteFromCart, changeCount } = React.useContext(cartContext);
+  return cart ? (
+    <Container>
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Product</TableCell>
+              <TableCell align="right">Price</TableCell>
+              <TableCell align="right">Count</TableCell>
+              <TableCell align="right">Total</TableCell>
+              <TableCell align="right">Info</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {cart.products.map(row => (
+              <TableRow
+                key={row.item.id}
+                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                <TableCell component="th" scope="row">
+                  {row.item.title}
+                </TableCell>
+                <TableCell align="right">{row.item.price}</TableCell>
+                <TableCell align="right">
+                  <IconButton
+                    onClick={() => changeCount(row.count - 1, row.item.id)}>
+                    <RemoveIcon />
+                  </IconButton>
+                  {row.count}
+                  <IconButton
+                    onClick={() => changeCount(row.count + 1, row.item.id)}>
+                    <AddIcon />
+                  </IconButton>
+                </TableCell>
+                <TableCell align="right">{row.subPrice}</TableCell>
+                <TableCell align="right">
+                  <IconButton onClick={() => deleteFromCart(row.item.id)}>
+                    <DeleteIcon />
+                  </IconButton>
+                  <IconButton
+                    onClick={() => navigate(`/details/${row.item.id}`)}>
+                    <InfoIcon />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <Box>
+        <Typography variant="h4">Total: {cart.totalPrice}$</Typography>
+      </Box>
+    </Container>
+  ) : (
+    <Loader />
   );
 }
